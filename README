@@ -1,0 +1,74 @@
+/* TEMA 2 - ASC  Petre Alexandra 335CB */
+
+// Formula =  B * At +  A^2 * B
+
+	Implementare Blas
+
+	Am copiat la început în matricele în care urma să păstrez rezultatul
+fiecărei operații matricele A și B.
+	Am folosit funcția dtrmm - pentru că era specifică pentru matrice
+triangulate. La final am făcut suma celor 2 matrice cu 2 for-uri (clasic).
+Am facut 3 înmulțiri (B x At, A x A, A^2 x B).
+	Local obțin rezultate OK când compar cele două fișiere de output.
+
+
+	Implementare Neoptim
+
+	Am facut 3 înmulțiri (B x At, A x A, A^2 x B).
+	Înmulțirea matricelor am făcut-o obișnuit ijk, am folosit registrul double
+sum pentru a calcula suma pentru un element în bucla k. Am ținut cont în
+implementare de faptul că matricea A este superior triunghiulară. La început am
+calculat At (matricea transpusă). 
+	Complexitatea temporală = N^3. Timp mediu ~ 19.620 pentru testul N = 1200 
+	
+
+	Implementare Optim
+
+	La început am calculat At (A transpus).
+Am facut 3 înmulțiri (B x At, A x A, A^2 x B). Am folosit configurația ikj pentru
+o performanță mai bună. Pentru fiecare înmultire am făcut doar operațiile 
+necesare (luând în considerare că matricea A este superior triangulară).
+Pentru optimizare am făcut și loop-unrolling unde am putut. 
+	Timpul mediu obținut ~ 7.180s pentru testul cu N = 1200. Pentru varianta
+optimă am un timp mai bun > 30% față de varianta neoptimă.
+	Complexitatea soluției este tot N^3.
+
+
+	Implementare Optim Extra
+
+	Am folosit flagurile: -floop-nest-optimize 
+						  -ffast-math
+	-floop-nest-optimize - am citit că optimizează modul în care se parcurg 
+						nested loops. Calculeaza o structura optimizata 
+						pentru buclele nested in functie de datele locale.
+	-ffast-math - flag care reduce timpul în care se calculează operațiile
+				(înmulțirile și adunările). Acest flag activează și alte flaguri
+				care micșorează timpul de rulare. GCC oferă acest flag care este
+				un shortcut pentru mai multe opțiuni, oferind un mod matematic
+				care nu respectă în totalitate regulile IEEE, dar este cel mai
+				rapid mod matematic. Sunt activate și alte flaguri cum ar fi
+				-funsafe-math-optimization, -fno-errno-math,  -fno-rounding-math
+				Fiecare flag încalcă altă regulă din standardul IEEE. Aceste
+				optimizări nu se fac respectând comportamentul strict al
+				floating-point arithmetic.
+
+	Timpul obținut pentru testul extra este ~ 5.080s pentru N = 1200
+	Timpul obținut pentru testul opt_f este ~ 5.560s pentru N = 1200
+	Deci timpul de calcul este cu 5% mai mic pentru varianta cu flaguri.
+
+	
+	Explicații GRAFICE
+
+	Am rulat teste și pentru N = 600 și N = 1000. Time (s) și N (dimensiunea).
+	în pdf-ul cu graficul am rulat tema de 7 ori pentru fiecare caz. In primul 
+tabel se găsește media pentru fiecare N în funcție de tipul rulării.
+În grafic am pus pe Ox N-ul și pe Oy timpul în care s-a calculat formula.
+
+	Am pus 5 tabele pentru fiecare caz, în care am pus timpul pentru cele 7
+rulări. Cu verde am colorat timpul cel mai mic obținut pentr N = 1200.
+
+	Am mai făcut un grafic cu timpii obținuți (datele din primul tabel). În 
+acest grafic se vede diferența mare între varianta Optimă și cea Neoptimă, dar și  
+faptul că varianta extra (cu flaguri - culoarea galbenă) este puțin mai rapidă 
+față de varianta opt_f (culoarea gri). Din ambele grafice cât și din tabele se 
+observă ușor că varianta Blas e cea mai bună (rapidă).
